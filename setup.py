@@ -7,7 +7,7 @@ def readall(path):
 
 setup(
     name="cadencepy",
-    version="0.1.0",
+    version="0.1.1",
     author="joetho786",
     author_email="thomas.2@iitj.ac.in",
     description="A python SDK for running simulation and reading data from Ocean Cadence",
