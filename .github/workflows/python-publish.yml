@@ -33,14 +33,21 @@ jobs:
 
       - name: Build docs
         run: |
-          cd docs
-          make clean
-          make html
-      - name: Deploy docs
-        uses: peaceiris/actions-gh-pages@v3
+          make -C docs html
+        
+      - name: Deploy docs to github pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
+          BRANCH: gh-pages
+          FOLDER: docs/build/html
+          CLEAN: true
+
+
+
+      
+          
+
+    
         
 
 
@@ -64,7 +71,7 @@ jobs:
     - name: Autobump version by changing version in setup.py with reference to GITHUB_REF
       run: |
         echo "GITHUB_REF: $GITHUB_REF#refs/tags/"
-        sed -i "s/version='.*'/version='${GITHUB_REF#refs/tags/}'/" setup.py
+        sed -i 
         cat setup.py
 
     - name: Build a binary wheel and a source tarball
