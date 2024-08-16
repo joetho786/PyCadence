@@ -69,7 +69,9 @@ jobs:
     
     - name: Autobump version by changing version in setup.py with reference to GITHUB_REF
       run: |
-        sed -i "s/version='.*'/version='${GITHUB_REF#refs/tags/}'/" setup.py
+          echo "GITHUB_REF: $GITHUB_REF"
+          sed -i "s@version='.*'@version='${GITHUB_REF#refs/tags/}'@" setup.py
+          cat setup.py
 
     - name: Build a binary wheel and a source tarball
       run: >-
