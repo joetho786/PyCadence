@@ -1,32 +1,61 @@
 # PyCadence
  A Python wrapper for running Cadence simulations
 
+## Pre-requisites
+- OS: Linux/Unix based OS
+- Python 3.6 or higher
+- IC615 or higher (Cadence Virtuoso) to be installed on the device with Ocean Spectre enabled
+- tmux to be installed on the device
+  
+    To install tmux on Ubuntu/Debian based systems, run the following command
+    ```shell
+    sudo apt-get install tmux
+    ```
+    
+    To install tmux on RedHat/CentOS based systems, run the following command
+    ```shell
+    sudo yum install tmux
+    ```
+
 ## Installation
-1. Ocean Spectre and Python to be installed on the same device
-2. Install PyCadence using pip
+1. Install PyCadence using pip
 ```pip install pycadence```
+
+Add the --user option if you don't want to install it systemwide.
+
+
 
 ## Usage
 1. Make sure to have a template init.ocn file ready
 2. In the ocn file placeholder values must be marked as {{value}} as shown in the sample init.ocn file placed in the sample folder
-3. Create a screen with name ocean_simulation using the following shell command. The screen should be in the directory of the init.ocn file
+3. Go to the directory where the init.ocn file is placed and enable the Cadence environment using the following shell command
 ```shell
-tmux new-session -t <session name>
+    csh
+    source /home/install/cshrc # Path to the cshrc file in the Cadence installation directory
+```
+Next, create a new tmux session using the following shell command
+
+```shell
+tmux new-session -s <session name>
 ```
 4. Install and enable ocean terminal using the following shell commands
 ```shell
 ocean
 ```
-6. Run the following python code to run the simulation
+Now, The terminal can be detached or left running in the background. To detach the terminal, press Ctrl+b and then press d.
+
+6. Now, create a python script and use the following code to run the simulation
+
 ```python
 from pycadence.pycadence import Connector
-x = [1,2,3,4,5] # List of values to be substituted in the template
-default = [1,2,3,4,5] # List of default values to be substituted in the template in case of error
-p=Connector(screen_name="ocean_simulation")
+x = [1,2,3,4,5] # List of values to be substituted in the template .ocn file
+default = [1,2,3,4,5] # List of default values to be substituted in the template in case no value is provided
+p=Connector(screen_name=<session name>)
 p.simulate(x, default,"init.ocn","output.ocn","output.txt")
 ```
 7. The result of simulation will be stored output.txt file and the output.ocn file will be the modified template file with the values substituted.
-8. The simulate function also has an argument called read_output which takes a function as an argument. This function will be called after the simulation is complete and the output.txt file is generated. The function should take the output.txt file as an argument and return a dictionary of the values to be substituted in the template file. The following code shows an example of how to use this argument.
+8. The simulate function also has an argument called `read_output` which takes a function as an argument. This function will be called after the simulation is complete and the output.txt file is generated. The function should take the output.txt file as an argument and return a Iterable of the values parsed from the output.txt file. The following code demonstrates how to use the `read_output` argument.
+
 ```python
 from pycadence.pycadence import Connector
 import numpy as np
@@ -53,4 +82,7 @@ x = [1,2,3,4,5] # List of values to be substituted in the template
 default = [1,2,3,4,5] # List of default values to be substituted in the template in case of error
 p.simulate(x, default,"init.ocn","output.ocn","output.txt",read_output)
 ```
-9. The above code will read the output.txt file and return a numpy array of the values to be substituted in the template file. The first column of the array will be substituted in the first placeholder and so on. The above code will work for any number of placeholders in the template file.
+9. The above code will read the output.txt file and return a numpy array of the values.
+
+10. Refer to the init.ocn file in the sample folder for the template file format.
+
