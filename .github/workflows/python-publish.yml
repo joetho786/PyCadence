@@ -89,6 +89,18 @@ jobs:
         git config --local user.name "autobumper"
         git commit -am "Bump version"
         git push
+    
+    - name: Create a Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        token: ${{ secrets.GITHUB_TOKEN }}
+        body: |
+          This is an automated release
+        draft: false
+        prerelease: false
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
       
 
 
