@@ -10,7 +10,7 @@ name: Cadencepy
 
 on:
   push:
-    branches: [ main, docs ]
+    branches: [ autobump ]
   release:
     types: [published]
 
