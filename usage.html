@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="python" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Usage &#8212; PyCadence 0.1.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=f1614fd6"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="api.html" />
+    <link rel="prev" title="Getting Started" href="installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
+<ol class="arabic simple">
+<li><p>Make sure to have a template *.ocn file ready.</p></li>
+</ol>
+<p>2. In the ocn file placeholder values must be marked as {{value}} as shown in the sample init.ocn file placed in the sample folder.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="n">ocean</span> <span class="n">script</span> <span class="n">line</span> <span class="n">writing</span> <span class="n">the</span> <span class="n">simulation</span> <span class="n">results</span> <span class="n">to</span> <span class="n">a</span> <span class="n">file</span> <span class="n">should</span> <span class="n">be</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">template</span> <span class="n">file</span><span class="o">.</span> <span class="n">Refer</span> <span class="n">the</span> <span class="n">sample</span> <span class="n">init</span><span class="o">.</span><span class="n">ocn</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">sample</span> <span class="n">folder</span> <span class="k">for</span> <span class="n">the</span> <span class="n">same</span><span class="o">.</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Go to the directory where the template <a href="#id1"><span class="problematic" id="id2">*</span></a>.ocn file is placed and enable the Cadence environment using the following shell command</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>csh
+<span class="nb">source</span><span class="w"> </span>/home/install/cshrc<span class="w"> </span><span class="c1"># Path to the cshrc file in the Cadence installation directory</span>
+</pre></div>
+</div>
+<p>Next, create a new tmux session using the following shell command</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tmux<span class="w"> </span>new-session<span class="w"> </span>-s<span class="w"> </span>&lt;session<span class="w"> </span>name&gt;
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Install and enable ocean terminal using the following shell commands</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ocean
+</pre></div>
+</div>
+<p>Now, The terminal can be detached or left running in the background. To detach the terminal, press Ctrl+b and then press d.</p>
+<ol class="arabic simple" start="6">
+<li><p>Now, create a python script and use the following code to run the simulation</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pycadence.pycadence</span> <span class="kn">import</span> <span class="n">Connector</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># List of values to be substituted in the template .ocn file</span>
+<span class="n">default</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># List of default values to be substituted in the template in case no value is provided</span>
+<span class="n">p</span><span class="o">=</span><span class="n">Connector</span><span class="p">(</span><span class="n">screen_name</span><span class="o">=&lt;</span><span class="n">session</span> <span class="n">name</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span><span class="s2">&quot;init.ocn&quot;</span><span class="p">,</span><span class="s2">&quot;output.ocn&quot;</span><span class="p">,</span><span class="s2">&quot;output.txt&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic" start="7">
+<li><p>The result of simulation will be stored output.txt file and the output.ocn file will be the modified template file with the values substituted.</p></li>
+<li><p>The simulate function also has an argument called <cite>read_output</cite> which takes a function as an argument. This function will be called after the simulation is complete and the output.txt file is generated. The function should take the output.txt file as an argument and return a Iterable of the values parsed from the output.txt file. The following code demonstrates how to use the <cite>read_output</cite> argument.</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pycadence.pycadence</span> <span class="kn">import</span> <span class="n">Connector</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">read_output</span><span class="p">(</span><span class="n">output_log_path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_log_path</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="c1"># read an store all lines into list</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">:]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="c1"># print(temp)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># print(&quot;Error in reading output file&quot;)</span>
+                <span class="c1"># print(e)</span>
+                <span class="k">pass</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="n">p</span><span class="o">=</span><span class="n">Connector</span><span class="p">(</span><span class="n">screen_name</span><span class="o">=</span><span class="s2">&quot;ocean_simulation&quot;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># List of values to be substituted in the template</span>
+<span class="n">default</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="c1"># List of default values to be substituted in the template in case of error</span>
+<span class="n">p</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span><span class="s2">&quot;init.ocn&quot;</span><span class="p">,</span><span class="s2">&quot;output.ocn&quot;</span><span class="p">,</span><span class="s2">&quot;output.txt&quot;</span><span class="p">,</span><span class="n">read_output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>The above code will read the output.txt file using the <cite>read_output</cite> function and return a numpy array of the values.</p></li>
+</ol>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyCadence</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="installation.html" title="previous chapter">Getting Started</a></li>
+      <li>Next: <a href="api.html" title="next chapter">&lt;no title&gt;</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, joetho786.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
