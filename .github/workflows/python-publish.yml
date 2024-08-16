@@ -40,8 +40,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           BRANCH: gh-pages
-          FOLDER: docs/build/html
-          CLEAN: true
+          FOLDER: docs/_build/html
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
