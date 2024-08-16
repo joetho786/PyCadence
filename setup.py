@@ -1,16 +1,19 @@
 from setuptools import setup, find_packages
 
+
 def readall(path):
     with open(path) as fp:
         return fp.read()
 
 # if version already exists, then update the version in setup.py
 
-from version import __version__
+
+VERSION = "0.1.3"
+
 
 setup(
     name="CadenceConnector",
-    version=__version__,
+    version=VERSION,
     author="joetho786",
     author_email="thomas.2@iitj.ac.in",
     description="A python SDK for running simulation and reading data from Ocean Cadence",

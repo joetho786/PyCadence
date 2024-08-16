@@ -1,4 +1,4 @@
-from version import __version__ as VERSION
+
 
 def update_version(version:str):
     version = version.split(".")
@@ -12,9 +12,19 @@ def update_version(version:str):
     return ".".join(version)
     
 
+
 if __name__ == "__main__":
-    new_version = update_version(VERSION)
-    print(f"New version: {new_version}")
-    with open("version.py", "w") as f:
-        f.write(f'__version__ = "{new_version}"')
-  
+
+    with open("setup.py","r") as fp:
+        data = fp.readlines()
+    for i in range(len(data)):
+        if "VERSION" in data[i]:
+            old_version = data[i].split("\"")[1]
+            new_version = update_version(old_version)
+            print(f"Old version: {old_version}")
+            print(f"New version: {new_version}")
+            data[i] = f"VERSION = \"{new_version}\"\n"
+            break
+    with open("setup.py","w") as fp:
+        fp.writelines(data)
+    print(f"Version updated to {new_version}")
