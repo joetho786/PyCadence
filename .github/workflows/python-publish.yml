@@ -69,7 +69,7 @@ jobs:
     
     - name: Autobump version by changing version in setup.py with reference to GITHUB_REF
       run: |
-          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_REF: $GITHUB_REF#refs/tags/"
           sed -i "s@version='.*'@version='${GITHUB_REF#refs/tags/}'@" setup.py
           cat setup.py
 
