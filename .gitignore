@@ -2,8 +2,6 @@ dist/
 __pycache__
 *.egg-info/
 
-<<<<<<< HEAD
 *.sh
-=======
-env/
->>>>>>> 8fa758cb865ac0e2589f7bf418b36652a50f7e56
+
+build/
