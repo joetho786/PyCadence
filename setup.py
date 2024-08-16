@@ -6,7 +6,7 @@ def readall(path):
         return fp.read()
 
 setup(
-    name="cadencepy",
+    name="pycadence",
     version="0.1.0",
     author="joetho786",
     author_email="thomas.2@iitj.ac.in",
@@ -15,7 +15,6 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/joetho786/PyCadence",
     packages=find_packages(),
-    package_data={'pycadence': ['*.sh']},
     install_requires=["requests","numpy"],
     classifiers=[
         "Programming Language :: Python :: 3",

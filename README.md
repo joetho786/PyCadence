@@ -4,20 +4,19 @@
 ## Installation
 1. Ocean Spectre and Python to be installed on the same device
 2. Install PyCadence using pip
-```pip install cadencepy```
+```pip install pycadence```
 
 ## Usage
 1. Make sure to have a template init.ocn file ready
 2. In the ocn file placeholder values must be marked as {{value}} as shown in the sample init.ocn file placed in the sample folder
 3. Create a screen with name ocean_simulation using the following shell command
 ```shell
-screen -S ocean_simulation
+tmux new-session -t <session name>
 ```
 4. Install and enable ocean terminal using the following shell commands
 ```shell
 ocean
 ```
-5. Then detach the screen using ctrl+a+d
 6. Run the following python code to run the simulation
 ```python
 import pycadence.pycadence as p
