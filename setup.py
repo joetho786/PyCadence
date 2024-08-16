@@ -6,10 +6,11 @@ def readall(path):
 
 # if version already exists, then update the version in setup.py
 
+from version import __version__
 
 setup(
     name="CadenceConnector",
-    version="0.0.1",
+    version=__version__,
     author="joetho786",
     author_email="thomas.2@iitj.ac.in",
     description="A python SDK for running simulation and reading data from Ocean Cadence",
@@ -28,5 +29,3 @@ setup(
 
 
 
-
-# pypi-AgEIcHlwaS5vcmcCJDFhMDc2ZWU0LTE3ZTgtNGRlOS1hOTE0LWRmNTE3NTE4ZGMwZQACKlszLCI2MzY2YWU0Ni01ZjkwLTQ0MDItOGU1ZS0yMjBjZDc3YmYwMmEiXQAABiBQf0EkLvK2Cs1N7M4lmQ_M1uMcY5eyhTGYRs4QoD8Ppw

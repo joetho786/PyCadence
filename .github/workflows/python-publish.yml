@@ -69,9 +69,7 @@ jobs:
     
     - name: Autobump version by changing version in setup.py with reference to GITHUB_REF
       run: |
-          echo "GITHUB_REF: ${GITHUB_REF#refs/*/}"
-          sed -i "s@version='.*'@version='${GITHUB_REF#refs/tags/}'@" setup.py
-          cat setup.py
+         python update_version.py
 
     - name: Build a binary wheel and a source tarball
       run: >-
@@ -87,15 +85,21 @@ jobs:
         pip install
         twine
         --user
-    
-    # - name: Publish to PyPI
-    #   run: >-
-    #     python3 -m
-    #     twine
-    #     upload
-    #     dist/*
-    #   env:
-    #     TWINE_USERNAME: __token__
-    #     TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: debug
+      run: |
+        cat setup.py
+
+
+
+    - name: Publish to PyPI
+      run: >-
+        python3 -m
+        twine
+        upload
+        dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
 
       
