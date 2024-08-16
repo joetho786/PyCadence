@@ -8,7 +8,7 @@ def readall(path):
 # if version already exists, then update the version in setup.py
 
 
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 
 
 setup(
