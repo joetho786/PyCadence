@@ -59,47 +59,37 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.x'
-    - name: Install pypa/build
-      run: >-
-        python3 -m
-        pip install
-        build
-        --user
+        python-version: '3.11'
+    
+    - name: Install Twine
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install setuptools wheel twine build
     
     - name: Autobump version by changing version in setup.py with reference to GITHUB_REF
       run: |
-         python update_version.py
+         python3 update_version.py
 
     - name: Build a binary wheel and a source tarball
-      run: >-
-        python3 -m
-        build
-        --sdist
-        --wheel
-        --outdir dist/
-      
-    - name: Install Twine
-      run: >-
-        python3 -m
-        pip install
-        twine
-        --user
-
-    - name: debug
       run: |
-        cat setup.py
-
-
+        python3 -m build
+      
 
     - name: Publish to PyPI
-      run: >-
-        python3 -m
-        twine
-        upload
-        dist/*
       env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        echo ${{ secrets.PYPI_API_TOKEN }}
+        twine upload dist/*
+
+    - name: Commit the changes
+      run: |
+        git config --local user.email "autobumper@gmail.com"
+        git config --local user.name "autobumper"
+        git commit -am "Bump version"
+        git push
+      
+
 
       
