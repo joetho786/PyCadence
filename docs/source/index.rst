@@ -14,6 +14,7 @@ A Python Wrapper to run Cadence Virtuoso simulations from Python.
 
    installation
    usage
+   examples
    api
 
 

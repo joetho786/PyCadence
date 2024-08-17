@@ -1,0 +1,27 @@
+ simulator( 'spectre )
+    design(	 "/home/ABC/simulation/lc_tank_oscillator/spectre/schematic/netlist/netlist")
+    resultsDir( "/home/ABC/simulation/lc_tank_oscillator/spectre/schematic" )
+    modelFile( 
+        'Some model files
+    )
+    analysis('pss ?fund "2.4G"  ?harms "5"  ?errpreset "conservative"  
+            ?oscana t  ?p "/net017"  ?n "/net3"  ?oscic "lin"  
+            ?ppv ""  )
+    analysis('pnoise ?relharmnum "1"  ?start "10"  ?stop "1M"  
+            ?p "/net017"  ?n "/net3"  ?oprobe ""  ?noisetype "timeaverage"  
+            ?noiseout list("usb")  ?noisetypeUI ""  ?osc_version ""  ?osc_accuracy ""  
+            ?ppv ""  )
+    desVar(	  "C" {value}p	)  # {value} is the placeholder for the value to be substituted
+    desVar(	  "L" {value}n	)
+    desVar(	  "W1" {value}u	)
+    desVar(	  "W2" {value}u	)
+    desVar(	  "W3" {value}u	)
+    desVar(	  "W4" {value}u	)
+    desVar(	  "W5" {value}u	)
+    envOption(
+        'analysisOrder  list("pss" "pnoise") 
+    )
+    temp( 27 )
+    run()
+    phsns = db20((getData("out" ?resultsDir "/home/joelthomas/simulation/lc_tank_oscillator/spectre/schematic" ?result "pnoise") / complex(0.000279621 -0.000983934)))
+    ocnPrint( ?output {output_log_path} phsns ?numSpaces 1 ?numberNotation 'scientific) # {output_log_path} is the placeholder to be used. It will automtically insert the 'output_file' argument passed in th simulate() function.

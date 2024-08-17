@@ -86,3 +86,43 @@ p.simulate(x, default,"init.ocn","output.ocn","output.txt",read_output)
 
 10. Refer to the init.ocn file in the sample folder for the template file format.
 
+
+## Examples
+ Refer to the [examples](https://joetho786.github.io/PyCadence/examples.html) page for examples on how to use PyCadence.
+
+## WorkFlow Diagram
+![Workflow Diagram](./docs/source/images/Workflow.png)
+
+## Documentation
+1. `Class PyCadence.Connector` : This class is used to connect to the Cadence environment and run the simulation
+    - `__init__(self, screen_name:str)` : Constructor to initialize the class with the screen name. The screen name is the name of the tmux session where the Cadence Ocean environment is running
+    - `simulate(self, x:List, default:List, init_file_path:str, output_file_path:str, output_log_path:str, read_output:Callable=None)` : Function to run the simulation.
+        - x : List of values to be substituted in the template file
+        - default : List of default values to be substituted in the template file in case of error
+        - init_file_path : Path to the template file
+        - output_file_path : Path to the output file
+        - output_log_path : Path to the output log file
+        - read_output : Function to read the output log file. The function should take the output log file as an argument and return an Iterable of the values parsed from the output log file
+    - `read_output(self, output_log_path:str) -> Iterable` : Function to read the output log file. The function should take the output log file as an argument and return an Iterable of the values parsed from the output log file.
+        - Override this function to provide custom implementation to read the output log file. This can be done by passing the function as an argument to the simulate function.
+    - `generate_ocn_file(self, values:List, default:List, init_file_path:str, output_file_path:str, output_log_path:str, sim_status_log_path:str)` : Function to generate the output file by substituting the values in the template file
+        - values : List of values to be substituted in the template file
+        - default : List of default values to be substituted in the template file in case of error
+        - init_file_path : Path to the template .ocn file
+        - output_file_path : Path to the output .ocn file created from the template file
+        - output_log_path : Path to the output log file where the output of the simulation will be stored
+        - sim_status_log_path : Path to the place holder simulation status log file. It is just a placeholder which indicates .ocn script has been run successfully. There is no need to override this argument except in cases where multiple simulations are run in parallel, in which case unique names should be provided for each simulation to avoid conflicts.
+
+    All the member of function of `Connector` class can be overridden to provide custom implementation.
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. 
+Steps to contribute:
+1. Fork the repository
+2. Create a new branch with the issue name. (Note: If there is no issue related to the change, create a new issue)
+3. Make changes and commit the code
+4. Create a pull request
+
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

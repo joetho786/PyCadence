@@ -63,7 +63,7 @@
 Usage
 =====
 1. Make sure to have a template \*.ocn file ready. 
-2. In the ocn file placeholder values must be marked as {{value}} as shown in the sample init.ocn file placed in the sample folder.
+2. In the ocn file placeholder values must be marked as {value} as shown in the sample init.ocn file placed in the sample folder.
 .. note::
     A ocean script line writing the simulation results to a file should be present in the template file. Refer the sample init.ocn file in the sample folder for the same.
 
