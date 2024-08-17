@@ -19,7 +19,7 @@
 
 ## Installation
 1. Install PyCadence using pip
-```pip install pycadence```
+```pip install CadenceConnector```
 
 Add the --user option if you don't want to install it systemwide.
 
