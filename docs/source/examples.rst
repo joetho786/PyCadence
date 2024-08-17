@@ -16,3 +16,16 @@ The following examples demonstrate how to use the PyCadence wrapper to run simul
 Example 1: Running a Monte Carlo simulation
 -------------------------------------------
 
+Consider a simple setup for a Monte Carlo simulation observing the phasenoise of a LC tank oscillator. The template ocn file generated is as follows.
+
+.. literalinclude:: ./samples/init.ocn
+    :language: ocean
+
+
+The following Python code demonstrates how to run the simulation using the PyCadence wrapper. Note: it is just an example implementation.
+
+.. literalinclude:: ./samples/example1.py
+    :language: python
+    
+
+
