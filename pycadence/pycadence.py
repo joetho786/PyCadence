@@ -51,7 +51,7 @@ class Connector:
             function to parse the output file and return the data
         '''
         sim_status_log_path = f"sim_status_{self.screen_name}.txt"
-        self.generate_ocn_script(x,default, init_file_path, output_file_path, output_log_path, sim_status_log_path)
+        self.generate_ocn_script(x,default, init_file_path, output_file_path, output_log_path)
         self.create_sh_file(output_file_path)
 
         if os.path.exists(sim_status_log_path):
