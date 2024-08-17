@@ -74,7 +74,7 @@ class Connector:
         data = read_output(output_log_path)
         return data
 
-    def generate_ocn_script(self,values,default, init_file_path, output_file_path="simulation.ocn", output_log_path="output.txt", sim_status_log_path="sim_status.txt"):
+    def generate_ocn_script(self,values,default, init_file_path, output_file_path="simulation.ocn", output_log_path="output.txt"):
         '''
         Helper function to generate the .ocn file from the template
         --------------------------------
@@ -88,11 +88,9 @@ class Connector:
             path to the temporary .ocn file to be created from the template. (Note: This file will be the one executed by the Ocean script)
         output_log_path: str
             path to the output file to store the simulation results
-        sim_status_log_path: str
-            path to the file to store the simulation status (completed or not)
 
         '''
-
+        sim_status_log_path = f"sim_status_{self.screen_name}.txt"
         if not os.path.exists(init_file_path):
             AssertionError("init_file_path does not exist at the given path!")
             

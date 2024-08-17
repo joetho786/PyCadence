@@ -111,7 +111,6 @@ p.simulate(x, default,"init.ocn","output.ocn","output.txt",read_output)
         - init_file_path : Path to the template .ocn file
         - output_file_path : Path to the output .ocn file created from the template file
         - output_log_path : Path to the output log file where the output of the simulation will be stored
-        - sim_status_log_path : Path to the place holder simulation status log file. It is just a placeholder which indicates .ocn script has been run successfully. There is no need to override this argument except in cases where multiple simulations are run in parallel, in which case unique names should be provided for each simulation to avoid conflicts.
 
     All the member of function of `Connector` class can be overridden to provide custom implementation.
 
