@@ -1,4 +1,3 @@
-import numpy as np
 import subprocess
 import os
 import time
@@ -30,7 +29,7 @@ class Connector:
                     # print("Error in reading output file")
                     # print(e)
                     pass
-            data = np.array(data)
+            
         return data
     
     def simulate(self,x,default, init_file_path, output_file_path="simulation.ocn", output_log_path="output.txt", read_output=read_output):
