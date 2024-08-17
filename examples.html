@@ -14,6 +14,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="api.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -47,6 +49,115 @@ native to Python by encapsulating the ADE-L simulation as a function call with a
 <p>The following examples demonstrate how to use the PyCadence wrapper to run simulations from Python.</p>
 <section id="example-1-running-a-monte-carlo-simulation">
 <h2>Example 1: Running a Monte Carlo simulation<a class="headerlink" href="#example-1-running-a-monte-carlo-simulation" title="Link to this heading">¶</a></h2>
+<p>Consider a simple setup for a Monte Carlo simulation observing the phasenoise of a LC tank oscillator. The template ocn file generated is as follows.</p>
+<div class="highlight-ocean notranslate"><div class="highlight"><pre><span></span> simulator( &#39;spectre )
+    design(	 &quot;/home/ABC/simulation/lc_tank_oscillator/spectre/schematic/netlist/netlist&quot;)
+    resultsDir( &quot;/home/ABC/simulation/lc_tank_oscillator/spectre/schematic&quot; )
+    modelFile( 
+        &#39;Some model files
+    )
+    analysis(&#39;pss ?fund &quot;2.4G&quot;  ?harms &quot;5&quot;  ?errpreset &quot;conservative&quot;  
+            ?oscana t  ?p &quot;/net017&quot;  ?n &quot;/net3&quot;  ?oscic &quot;lin&quot;  
+            ?ppv &quot;&quot;  )
+    analysis(&#39;pnoise ?relharmnum &quot;1&quot;  ?start &quot;10&quot;  ?stop &quot;1M&quot;  
+            ?p &quot;/net017&quot;  ?n &quot;/net3&quot;  ?oprobe &quot;&quot;  ?noisetype &quot;timeaverage&quot;  
+            ?noiseout list(&quot;usb&quot;)  ?noisetypeUI &quot;&quot;  ?osc_version &quot;&quot;  ?osc_accuracy &quot;&quot;  
+            ?ppv &quot;&quot;  )
+    desVar(	  &quot;C&quot; {value}p	)  # {value} is the placeholder for the value to be substituted
+    desVar(	  &quot;L&quot; {value}n	)
+    desVar(	  &quot;W1&quot; {value}u	)
+    desVar(	  &quot;W2&quot; {value}u	)
+    desVar(	  &quot;W3&quot; {value}u	)
+    desVar(	  &quot;W4&quot; {value}u	)
+    desVar(	  &quot;W5&quot; {value}u	)
+    envOption(
+        &#39;analysisOrder  list(&quot;pss&quot; &quot;pnoise&quot;) 
+    )
+    temp( 27 )
+    run()
+    phsns = db20((getData(&quot;out&quot; ?resultsDir &quot;/home/joelthomas/simulation/lc_tank_oscillator/spectre/schematic&quot; ?result &quot;pnoise&quot;) / complex(0.000279621 -0.000983934)))
+    ocnPrint( ?output {output_log_path} phsns ?numSpaces 1 ?numberNotation &#39;scientific) # {output_log_path} is the placeholder to be used. It will automtically insert the &#39;output_file&#39; argument passed in th simulate() function.
+</pre></div>
+</div>
+<p>The following Python code demonstrates how to run the simulation using the PyCadence wrapper. Note: it is just an example implementation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pycadence.pycadence</span> <span class="kn">import</span> <span class="n">Connector</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">Connector</span><span class="p">(</span><span class="n">screen_name</span><span class="o">=</span><span class="s2">&quot;session1&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">generate_monte_carlo_samples</span><span class="p">(</span> <span class="n">N</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function to generate monte carlo samples</span>
+<span class="sd">    --------------------------------</span>
+<span class="sd">    N: int</span>
+<span class="sd">        number of samples to generate</span>
+<span class="sd">    X: list</span>
+<span class="sd">        list of default values of design variables</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">X</span>
+    <span class="n">upper_bound</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">X</span>
+
+    <span class="n">samples</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">)):</span>
+        <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">upper_bound</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">N</span><span class="p">))</span>  <span class="c1"># Assumed variance of 10% of the mean</span>
+    <span class="n">samples</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">samples</span><span class="o">.</span><span class="n">T</span>
+
+<span class="k">def</span> <span class="nf">outputReader</span><span class="p">(</span><span class="n">output_log_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Helper function to parse the output file and return the data. Customize this as per need with reference to the output file format.</span>
+<span class="sd">    The default implementation can be found Connector().read_output()</span>
+<span class="sd">    --------------------------------</span>
+<span class="sd">    output_log_path: str</span>
+<span class="sd">        path to the output file</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_log_path</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="c1"># read an store all lines into list</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">:]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="c1"># print(temp)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="nb">float</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># print(&quot;Error in reading output file&quot;)</span>
+                <span class="c1"># print(e)</span>
+                <span class="k">pass</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">objective_function</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Objective function to be optimized</span>
+<span class="sd">    --------------------------------</span>
+<span class="sd">    x: list</span>
+<span class="sd">        list of values to be passed to the simulation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">default</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># some default values</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">default</span><span class="p">,</span> <span class="s2">&quot;init.ocn&quot;</span><span class="p">,</span> <span class="s2">&quot;monte_simulation.ocn&quot;</span><span class="p">,</span> <span class="s2">&quot;output.txt&quot;</span><span class="p">,</span> <span class="n">read_output</span> <span class="o">=</span> <span class="n">outputReader</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="mi">54</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># I am only interested in the 55th data point not the whole series. Note: This is just an example</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1"># number of samples</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span> <span class="c1"># default values of design variables</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">generate_monte_carlo_samples</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+    <span class="n">evaluations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+        <span class="n">evaluations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objective_function</span><span class="p">(</span><span class="n">sample</span><span class="p">))</span>
+    <span class="n">evaluations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">evaluations</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">evaluations</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">evaluations</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Variance: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">evaluations</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Standard Deviation: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">evaluations</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">evaluations</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Min: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">evaluations</span><span class="p">))</span>
+    
+    
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -77,15 +188,21 @@ native to Python by encapsulating the ADE-L simulation as a function call with a
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-1-running-a-monte-carlo-simulation">Example 1: Running a Monte Carlo simulation</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="api.html" title="next chapter">&lt;no title&gt;</a></li>
   </ul></li>
 </ul>
 </div>
